@@ -2,9 +2,12 @@
   "name": "a",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "npx jest"
+    "wordStart": "ts-node index.ts wordStart",
+    "wordClose": "ts-node index.ts wordClose",
+    "test": "npx jest",
+    "eslint": "eslint"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +18,8 @@
     "@babel/preset-env": "^7.14.7",
     "@babel/preset-typescript": "^7.14.5",
     "@types/jest": "^26.0.24",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
     "babel-jest": "^27.0.6",
     "babel-loader": "^8.2.2",
     "babel-plugin-module-alias": "^1.6.0",
@@ -27,5 +32,9 @@
     "supertest": "^6.1.3",
     "typescript": "^4.3.5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "commander": "^8.0.0",
+    "ts-node": "^10.1.0"
+  }
 }
