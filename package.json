@@ -6,6 +6,7 @@
   "scripts": {
     "wordStart": "ts-node index.ts wordStart",
     "wordClose": "ts-node index.ts wordClose",
+    "docOpen": "ts-node index.ts docOpen",
     "test": "npx jest",
     "eslint": "eslint"
   },

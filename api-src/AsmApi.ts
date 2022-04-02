@@ -1,4 +1,4 @@
-var fs = require('fs');
+const fs = require('fs');
 import { stat } from 'fs/promises';
 
 export const requestFlagDir = 'request';
@@ -11,7 +11,7 @@ export enum AsmApiResponseCode {
     ERROR_WRITE_REQUEST_BODY = 'ERROR_WRITE_REQUEST_BODY',
     ERROR_WRITE_REQUEST_FLAG = 'ERROR_WRITE_REQUEST_FLAG',
     REMOTE_ANSWER_TIMEOUT = 'REMOTE_ANSWER_TIMEOUT',
-    ERROR_READ_RESPONSE_FLAG = 'ERROR_READ_RESPONSE_FLAG',
+    ERROR_READ_RESPONSE_FLAG = 'ERROR_READ_RESPONSE_FLAG'
 }
 
 export interface AsmApiResponse {
@@ -25,21 +25,25 @@ export const WAIT_FOR_RESPONSE = true;
 function fileCreated(fName: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
         const searchAndWait = () => {
-            stat(fName).then(() => {resolve(true)}).catch((err)=>{
-                setTimeout(() => {
-                    searchAndWait();
-                }, 500);
-            });
+            stat(fName)
+                .then(() => {
+                    resolve(true);
+                })
+                .catch((err) => {
+                    setTimeout(() => {
+                        searchAndWait();
+                    }, 500);
+                });
         };
         searchAndWait();
-    })
+    });
 }
 
 export class AsmApi {
     _body: string | null = null;
     _workFolder: string | null = null;
     _id: string | null = null;
-    
+
     constructor(folder: string) {
         this._workFolder = folder;
     }
@@ -55,7 +59,7 @@ export class AsmApi {
     }
 
     async send(waitResponse: boolean = WAIT_FOR_RESPONSE): Promise<AsmApiResponse> {
-        var fileContent = "Hello World!";
+        const fileContent = 'Hello World!';
         const requestFlagFile = `${this._workFolder}/${requestFlagDir}/${this._id}`;
         const requestBodyFile = `${this._workFolder}/${requestBodyDir}/${this._id}`;
         const responseFlagFile = `${this._workFolder}/${responseFlagDir}/${this._id}`;
@@ -76,7 +80,7 @@ export class AsmApi {
                             err
                         });
                     }
-                
+
                     if (waitResponse === DONT_WAIT_FOR_RESPONSE) {
                         resolve({
                             status: AsmApiResponseCode.OK
@@ -91,18 +95,19 @@ export class AsmApi {
                         });
                     }, 4000);
 
-                    fileCreated(responseFlagFile).then(() => {
-                        const flagText = fs.readFileSync(responseFlagFile, 'utf8');
-                        const bodyText = fs.readFileSync(responseBodyFile, 'utf8');
-                        resolve({
-                            status: flagText,
-                            body: bodyText
-                        });
-                        clearTimeout(slowResponseTimeout);
-                        
-                    }).catch((err)=> console.log('error waing for file responseFlagFile'))
-                }); 
-            }); 
+                    fileCreated(responseFlagFile)
+                        .then(() => {
+                            const flagText = fs.readFileSync(responseFlagFile, 'utf8');
+                            const bodyText = fs.readFileSync(responseBodyFile, 'utf8');
+                            resolve({
+                                status: flagText,
+                                body: bodyText
+                            });
+                            clearTimeout(slowResponseTimeout);
+                        })
+                        .catch((err) => console.log('error waing for file responseFlagFile'));
+                });
+            });
         });
     }
 }
@@ -110,4 +115,3 @@ export class AsmApi {
 export function asmApi(folder: string): AsmApi {
     return new AsmApi(folder);
 }
-

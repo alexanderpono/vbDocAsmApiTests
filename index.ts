@@ -43,6 +43,22 @@ commander
         );
     });
 
+commander
+    .command('docOpen')
+    .description('open document')
+    .argument('<docname>')
+    .action(async (docname: string) => {
+        const id = String(Date.now());
+        console.log('docOpen() docname=', docname);
+        call(
+            async () =>
+                await asmApi(paths.asmApi.path1)
+                    .setId(id)
+                    .setBody(`docOpen "${docname}"`)
+                    .send(WAIT_FOR_RESPONSE)
+        );
+    });
+
 commander.version('1.0.0').description('Configuration files creator.');
 
 commander.parse(process.argv);
