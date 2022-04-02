@@ -41,12 +41,10 @@ Sub docReplaceSelection(text As String)
 End Sub
 
 Function getArgs()
-    Dim cmdLine As String  'command-line string
+    Dim cmdLine As String
     Dim args As Variant
     
     cmdLine = "D:\www\vbDocAsm\commands.txt 2"
-    'cmdLine = Mid(cmdLine, 1, 255)
-    'On Error Resume Next  'for the wksht-function "Search"
     args = Split(Mid(cmdLine, 1, 255), " ")
     
     getArgs = args
@@ -71,26 +69,20 @@ Sub execCommand(command As String)
     
     If LCase(command) = "wordstart" Then
         wordStart
-        'execCommand = ""
         Exit Sub
     End If
     
     If LCase(command) = "wordclose" Then
         wordClose
-        'execCommand = ""
         Exit Sub
     End If
 
     commandAr = Split(command)
     If commandAr(0) = "docOpen" Then
-        'MsgBox "docOpen"
         Dim docName As String
         docName = commandAr(1)
         docName = Replace(docName, """", "")
-        'MsgBox docName
         docOpen docName
-        'execCommand = ""
-        'Console.WriteLine "1"
         Exit Sub
     End If
 End Sub

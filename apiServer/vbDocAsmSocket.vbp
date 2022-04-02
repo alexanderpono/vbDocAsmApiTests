@@ -4,7 +4,6 @@ Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\WINDOWS\system32\st
 Module=FL; FL.bas
 Module=API_IO; API_IO.bas
 Module=WORD; WORD.bas
-Module=STR; ..\vbDocAsm\STR.bas
 IconForm="vbDocAsmSocketForm"
 Startup="vbDocAsmSocketForm"
 HelpFile=""
