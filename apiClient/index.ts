@@ -1,4 +1,4 @@
-import { asmApi, WAIT_FOR_RESPONSE } from './api-src/AsmApi';
+import { asmApi } from './api-src/AsmApi';
 import { paths } from './framework/config';
 
 const commander = require('commander'),
@@ -18,29 +18,15 @@ async function call(callback: () => Promise<unknown>) {
 commander
     .command('wordStart')
     .description('start word')
-    .action(async () => {
-        const id = String(Date.now());
-        call(
-            async () =>
-                await asmApi(paths.asmApi.path1)
-                    .setId(id)
-                    .setBody('wordStart')
-                    .send(WAIT_FOR_RESPONSE)
-        );
+    .action(() => {
+        call(() => asmApi(paths.asmApi.path1).wordStart(String(Date.now())));
     });
 
 commander
     .command('wordClose')
     .description('close word')
-    .action(async () => {
-        const id = String(Date.now());
-        call(
-            async () =>
-                await asmApi(paths.asmApi.path1)
-                    .setId(id)
-                    .setBody('wordClose')
-                    .send(WAIT_FOR_RESPONSE)
-        );
+    .action(() => {
+        call(() => asmApi(paths.asmApi.path1).wordClose(String(Date.now())));
     });
 
 commander
@@ -48,15 +34,7 @@ commander
     .description('open document')
     .argument('<docname>')
     .action(async (docname: string) => {
-        const id = String(Date.now());
-        console.log('docOpen() docname=', docname);
-        call(
-            async () =>
-                await asmApi(paths.asmApi.path1)
-                    .setId(id)
-                    .setBody(`docOpen "${docname}"`)
-                    .send(WAIT_FOR_RESPONSE)
-        );
+        call(() => asmApi(paths.asmApi.path1).docOpen(String(Date.now()), docname));
     });
 
 commander.version('1.0.0').description('Configuration files creator.');

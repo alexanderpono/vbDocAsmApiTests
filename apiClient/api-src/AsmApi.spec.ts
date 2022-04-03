@@ -1,7 +1,6 @@
 import {
     asmApi,
     AsmApiResponse,
-    AsmApiResponseCode,
     DONT_WAIT_FOR_RESPONSE,
     requestBodyDir,
     requestFlagDir
@@ -73,9 +72,25 @@ describe('AsmApi', () => {
             .setBody(faker.random.word())
             .send();
 
-        console.log('id=', id);
-        console.log('response=', response);
+        expect(typeof response.status).toBe('string');
+    });
 
-        expect(response.status).toBe(AsmApiResponseCode.OK);
+    it('.send(unknown command) gets USER_ERROR(UNKNOWN_COMMAND)', async () => {
+        const id = String(Date.now());
+        const response: AsmApiResponse = await asmApi(paths.asmApi.path1)
+            .setId(id)
+            .setBody(faker.random.word())
+            .send();
+
+        expect(response).toEqual({ status: 'USER_ERROR', body: 'UNKNOWN_COMMAND' });
+    });
+
+    it('.send() throws ERROR_WRITE_REQUEST_BODY if API path is wrong', async () => {
+        const id = String(Date.now());
+        asmApi(paths.asmApi.badPath)
+            .setId(id)
+            .setBody(faker.random.word())
+            .send()
+            .catch((e) => expect(e.status).toBe('ERROR_WRITE_REQUEST_BODY'));
     });
 });

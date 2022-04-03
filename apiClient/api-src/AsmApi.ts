@@ -23,13 +23,13 @@ export const DONT_WAIT_FOR_RESPONSE = false;
 export const WAIT_FOR_RESPONSE = true;
 
 function fileCreated(fName: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const searchAndWait = () => {
             stat(fName)
                 .then(() => {
                     resolve(true);
                 })
-                .catch((err) => {
+                .catch(() => {
                     setTimeout(() => {
                         searchAndWait();
                     }, 500);
@@ -105,11 +105,23 @@ export class AsmApi {
                             });
                             clearTimeout(slowResponseTimeout);
                         })
-                        .catch((err) => console.log('error waing for file responseFlagFile'));
+                        .catch(() => console.log('error waing for file responseFlagFile'));
                 });
             });
         });
     }
+
+    wordStart = (id: string): Promise<AsmApiResponse> => {
+        return this.setId(id).setBody('wordStart').send(WAIT_FOR_RESPONSE);
+    };
+
+    wordClose = (id: string): Promise<AsmApiResponse> => {
+        return this.setId(id).setBody('wordClose').send(WAIT_FOR_RESPONSE);
+    };
+
+    docOpen = (id: string, docname: string): Promise<AsmApiResponse> => {
+        return this.setId(id).setBody(`docOpen "${docname}"`).send(WAIT_FOR_RESPONSE);
+    };
 }
 
 export function asmApi(folder: string): AsmApi {

@@ -91,6 +91,7 @@ Sub processRequest(requestId As String)
     Dim command As String
     Dim commandi As Variant
     Dim commandAr() As String
+    Dim commandResult() As String
     For Each commandi In responseBodyAr
         command = Trim(commandi)
         command = Replace(command, vbLf, "")
@@ -98,15 +99,21 @@ Sub processRequest(requestId As String)
             writeLog ("EXEC " & command)
             
             commandAr = Split(command)
-            Dim arr() As Variant
-            arr = Array("foo", "vvv")
-            execCommand command
-            'MsgBox "command=" & command
+            commandResult = execCommand(command)
+            writeLog ("commandResult(0)=" & commandResult(0))
+            If commandResult(0) <> COMMAND_CODE_OK Then
+                Exit For
+            End If
         End If
     Next
        
-    responseBody = "uuu" & vbCrLf
-    responseCode = "OK"
+    If commandResult(0) = COMMAND_CODE_OK Then
+        responseBody = ""
+        responseCode = "OK"
+    Else
+        responseBody = commandResult(1)
+        responseCode = commandResult(0)
+    End If
     
     writeResponseBody requestId, responseBody
     writeResponseFlag requestId, responseCode
@@ -137,11 +144,9 @@ Sub processFirstRequest()
     Dim requestId As String
     
     flagFilesCount = getFlagFilesCount
-    'MsgBox "flagFilesCount=" & flagFilesCount
     
     If (flagFilesCount > 0) Then
         requestId = getFirstFlagFileName
-        'MsgBox "requestId=" & requestId
         processRequest requestId
     End If
 End Sub

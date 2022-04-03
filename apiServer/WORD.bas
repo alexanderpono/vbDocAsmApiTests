@@ -1,5 +1,7 @@
 Attribute VB_Name = "WORD"
 Global word As Object
+Global Const COMMAND_CODE_OK = "OK"
+Const COMMAND_CODE_UNKNOWN_COMMAND = "UNKNOWN_COMMAND"
 
 Sub wordStart()
     Set word = CreateObject("word.application")
@@ -64,17 +66,22 @@ Sub printArgs(args As Variant)
 
 End Sub
 
-Sub execCommand(command As String)
+Function execCommand(command As String) As String()
     Dim commandAr() As String
+    Dim returnVal(0 To 1) As String
     
     If LCase(command) = "wordstart" Then
         wordStart
-        Exit Sub
+        returnVal(0) = COMMAND_CODE_OK
+        execCommand = returnVal
+        Exit Function
     End If
     
     If LCase(command) = "wordclose" Then
         wordClose
-        Exit Sub
+        returnVal(0) = COMMAND_CODE_OK
+        execCommand = returnVal
+        Exit Function
     End If
 
     commandAr = Split(command)
@@ -83,6 +90,12 @@ Sub execCommand(command As String)
         docName = commandAr(1)
         docName = Replace(docName, """", "")
         docOpen docName
-        Exit Sub
+        returnVal(0) = COMMAND_CODE_OK
+        execCommand = returnVal
+        Exit Function
     End If
-End Sub
+    
+    returnVal(0) = COMMAND_CODE_UNKNOWN_COMMAND
+    execCommand = returnVal
+    
+End Function
