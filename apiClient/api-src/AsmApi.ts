@@ -71,6 +71,7 @@ export class AsmApi {
                         status: AsmApiResponseCode.ERROR_WRITE_REQUEST_BODY,
                         err
                     });
+                    return;
                 }
 
                 fs.writeFile(requestFlagFile, fileContent, (err) => {
@@ -79,6 +80,7 @@ export class AsmApi {
                             status: AsmApiResponseCode.ERROR_WRITE_REQUEST_FLAG,
                             err
                         });
+                        return;
                     }
 
                     if (waitResponse === DONT_WAIT_FOR_RESPONSE) {
@@ -95,17 +97,15 @@ export class AsmApi {
                         });
                     }, 4000);
 
-                    fileCreated(responseFlagFile)
-                        .then(() => {
-                            const flagText = fs.readFileSync(responseFlagFile, 'utf8');
-                            const bodyText = fs.readFileSync(responseBodyFile, 'utf8');
-                            resolve({
-                                status: flagText,
-                                body: bodyText
-                            });
-                            clearTimeout(slowResponseTimeout);
-                        })
-                        .catch(() => console.log('error waing for file responseFlagFile'));
+                    fileCreated(responseFlagFile).then(() => {
+                        const flagText = fs.readFileSync(responseFlagFile, 'utf8');
+                        const bodyText = fs.readFileSync(responseBodyFile, 'utf8');
+                        resolve({
+                            status: flagText,
+                            body: bodyText
+                        });
+                        clearTimeout(slowResponseTimeout);
+                    });
                 });
             });
         });
