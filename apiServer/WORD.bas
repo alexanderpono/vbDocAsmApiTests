@@ -1,28 +1,39 @@
 Attribute VB_Name = "WORD"
 Global word As Object
 Global Const COMMAND_CODE_OK = "OK"
-Const COMMAND_CODE_UNKNOWN_COMMAND = "UNKNOWN_COMMAND"
+Const UNKNOWN_COMMAND = "UNKNOWN_COMMAND"
+Const COMMAND_CODE_USER_ERROR = "USER_ERROR"
+Const WORD_IS_CLOSED = "WORD_IS_CLOSED"
+Const IDX_CODE = 0
+Const IDX_DATA = 1
 
 Sub wordStart()
     Set word = CreateObject("word.application")
     word.Visible = True
 End Sub
 
-Sub wordClose()
+Function wordClose() As String
     If word Is Nothing Then
+        wordClose = WORD_IS_CLOSED
     Else
         word.Quit
         Set word = Nothing
+        wordClose = OK
     End If
-End Sub
+End Function
 
 Sub docClose()
     word.ActiveDocument.Close SaveChanges:=False
 End Sub
 
-Sub docOpen(path As String)
-    word.Documents.Open fileName:=path
-End Sub
+Function docOpen(path As String) As String
+    If word Is Nothing Then
+        docOpen = WORD_IS_CLOSED
+    Else
+        word.Documents.Open fileName:=path
+        docOpen = OK
+    End If
+End Function
 
 Sub docFind(text As String)
     With word.Selection.Find
@@ -69,18 +80,25 @@ End Sub
 Function execCommand(command As String) As String()
     Dim commandAr() As String
     Dim returnVal(0 To 1) As String
+    Dim code As String
     
     If LCase(command) = "wordstart" Then
         wordStart
-        returnVal(0) = COMMAND_CODE_OK
+        returnVal(IDX_CODE) = COMMAND_CODE_OK
         execCommand = returnVal
         Exit Function
     End If
     
     If LCase(command) = "wordclose" Then
-        wordClose
-        returnVal(0) = COMMAND_CODE_OK
-        execCommand = returnVal
+        code = wordClose
+        If code = OK Then
+            returnVal(IDX_CODE) = COMMAND_CODE_OK
+            execCommand = returnVal
+        Else
+            returnVal(IDX_CODE) = COMMAND_CODE_USER_ERROR
+            returnVal(IDX_DATA) = code
+            execCommand = returnVal
+        End If
         Exit Function
     End If
 
@@ -89,13 +107,20 @@ Function execCommand(command As String) As String()
         Dim docName As String
         docName = commandAr(1)
         docName = Replace(docName, """", "")
-        docOpen docName
-        returnVal(0) = COMMAND_CODE_OK
-        execCommand = returnVal
+        code = docOpen(docName)
+        If (code = OK) Then
+            returnVal(0) = COMMAND_CODE_OK
+            execCommand = returnVal
+        Else
+            returnVal(IDX_CODE) = COMMAND_CODE_USER_ERROR
+            returnVal(IDX_DATA) = code
+            execCommand = returnVal
+        End If
         Exit Function
     End If
     
-    returnVal(0) = COMMAND_CODE_UNKNOWN_COMMAND
+    returnVal(0) = COMMAND_CODE_USER_ERROR
+    returnVal(1) = UNKNOWN_COMMAND
     execCommand = returnVal
     
 End Function

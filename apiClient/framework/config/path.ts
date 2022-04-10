@@ -5,5 +5,8 @@ export const paths = {
         withoutRequestFlag: './api-tests/apiServerWithoutRequestFlag',
         withoutRequestBody: './api-tests/apiServerWithoutRequestBody',
         apiServerDoesNotRun: './api-tests/apiServerDoesNotRun'
+    },
+    fixtures: {
+        doc1: 'd:/www/vbDocAsmApiTests/apiClient/framework/fixtures/doc1.doc'
     }
 };

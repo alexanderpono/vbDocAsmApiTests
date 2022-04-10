@@ -3,7 +3,9 @@ import {
     AsmApiResponse,
     DONT_WAIT_FOR_RESPONSE,
     requestBodyDir,
-    requestFlagDir
+    requestFlagDir,
+    RESPONSE_OK,
+    RESPONSE_WORD_CLOSED
 } from './AsmApi';
 import { paths } from '../framework/config';
 import faker from 'faker';
@@ -120,6 +122,39 @@ describe('AsmApi', () => {
                     expect(e.status).toBe('REMOTE_ANSWER_TIMEOUT');
                     done();
                 });
+        });
+    });
+
+    describe('.wordClose()', () => {
+        it('returns WORD_IS_CLOSED after wordClose-wordClose', async () => {
+            await asmApi(paths.asmApi.path1).wordClose(String(Date.now()));
+            const result = await asmApi(paths.asmApi.path1).wordClose(String(Date.now()));
+            expect(result).toEqual(RESPONSE_WORD_CLOSED);
+        });
+        it('returns OK after wordStart-wordClose', async () => {
+            await asmApi(paths.asmApi.path1).wordStart(String(Date.now()));
+            const result = await asmApi(paths.asmApi.path1).wordClose(String(Date.now()));
+            expect(result).toEqual(RESPONSE_OK);
+        });
+    });
+
+    describe('.docOpen()', () => {
+        it('returns WORD_IS_CLOSED after wordClose-docOpen', async () => {
+            await asmApi(paths.asmApi.path1).wordClose(String(Date.now()));
+            const result = await asmApi(paths.asmApi.path1).docOpen(
+                String(Date.now()),
+                paths.fixtures.doc1
+            );
+            expect(result).toEqual(RESPONSE_WORD_CLOSED);
+        });
+        it('returns OK after wordStart-docOpen', async () => {
+            await asmApi(paths.asmApi.path1).wordStart(String(Date.now()));
+            const result = await asmApi(paths.asmApi.path1).docOpen(
+                String(Date.now()),
+                paths.fixtures.doc1
+            );
+            await asmApi(paths.asmApi.path1).wordClose(String(Date.now()));
+            expect(result).toEqual(RESPONSE_OK);
         });
     });
 });

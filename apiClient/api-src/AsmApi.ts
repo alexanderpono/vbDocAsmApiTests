@@ -11,7 +11,12 @@ export enum AsmApiResponseCode {
     ERROR_WRITE_REQUEST_BODY = 'ERROR_WRITE_REQUEST_BODY',
     ERROR_WRITE_REQUEST_FLAG = 'ERROR_WRITE_REQUEST_FLAG',
     REMOTE_ANSWER_TIMEOUT = 'REMOTE_ANSWER_TIMEOUT',
-    ERROR_READ_RESPONSE_FLAG = 'ERROR_READ_RESPONSE_FLAG'
+    ERROR_READ_RESPONSE_FLAG = 'ERROR_READ_RESPONSE_FLAG',
+    USER_ERROR = 'USER_ERROR'
+}
+
+export enum AsmApiError {
+    WORD_IS_CLOSED = 'WORD_IS_CLOSED'
 }
 
 export interface AsmApiResponse {
@@ -21,6 +26,11 @@ export interface AsmApiResponse {
 
 export const DONT_WAIT_FOR_RESPONSE = false;
 export const WAIT_FOR_RESPONSE = true;
+export const RESPONSE_OK: AsmApiResponse = { status: AsmApiResponseCode.OK, body: '' };
+export const RESPONSE_WORD_CLOSED: AsmApiResponse = {
+    status: AsmApiResponseCode.USER_ERROR,
+    body: AsmApiError.WORD_IS_CLOSED
+};
 
 function fileCreated(fName: string): Promise<boolean> {
     return new Promise((resolve) => {
