@@ -18,7 +18,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": [ "api-src/**/*" ],
+  "include": [ "api-src/**/*", "src/AsmApi" ],
   "exclude": [
     "node_modules",
     "**/*.spec.ts",

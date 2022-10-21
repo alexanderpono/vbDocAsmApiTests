@@ -2,9 +2,9 @@ export const paths = {
     asmApi: {
         path1: '../apiServer',
         badPath: './noServerHere',
-        withoutRequestFlag: './api-tests/apiServerWithoutRequestFlag',
-        withoutRequestBody: './api-tests/apiServerWithoutRequestBody',
-        apiServerDoesNotRun: './api-tests/apiServerDoesNotRun'
+        withoutRequestFlag: './src/api-tests/apiServerWithoutRequestFlag',
+        withoutRequestBody: './src/api-tests/apiServerWithoutRequestBody',
+        apiServerDoesNotRun: './src/api-tests/apiServerDoesNotRun'
     },
     fixtures: {
         doc1: 'd:/www/vbDocAsmApiTests/apiClient/src/testFramework/fixtures/doc1.doc',

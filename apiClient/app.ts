@@ -1,4 +1,4 @@
-import { asmApi } from './api-src/AsmApi';
+import { asmApi } from './src/AsmApi';
 import { paths } from './src/testFramework/config';
 const { description, name, version } = require('./package.json');
 import { program } from 'commander';

@@ -1,5 +1,5 @@
 import { asmApi, DONT_WAIT_FOR_RESPONSE, requestBodyDir, requestFlagDir } from './AsmApi';
-import { paths } from '../../src/testFramework/config';
+import { paths } from '../testFramework/config';
 import faker from 'faker';
 import { stat } from 'fs/promises';
 import {
