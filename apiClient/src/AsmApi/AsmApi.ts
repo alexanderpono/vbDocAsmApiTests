@@ -52,48 +52,46 @@ export class AsmApi {
         const requestBodyFile = `${this._workFolder}/${requestBodyDir}/${this._id}`;
         const responseFlagFile = `${this._workFolder}/${responseFlagDir}/${this._id}`;
         const responseBodyFile = `${this._workFolder}/${responseBodyDir}/${this._id}`;
+
+        try {
+            await fs.promises.writeFile(requestBodyFile, this._body);
+        } catch (err) {
+            return Promise.reject({
+                status: AsmApiResponseCode.ERROR_WRITE_REQUEST_BODY,
+                err
+            });
+        }
+
+        try {
+            await fs.promises.writeFile(requestFlagFile, fileContent);
+        } catch (err) {
+            return Promise.reject({
+                status: AsmApiResponseCode.ERROR_WRITE_REQUEST_FLAG,
+                err
+            });
+        }
+
+        if (waitResponse === DONT_WAIT_FOR_RESPONSE) {
+            return Promise.resolve({
+                status: AsmApiResponseCode.OK
+            });
+        }
+
         return new Promise((resolve, reject) => {
-            fs.writeFile(requestBodyFile, this._body, (err) => {
-                if (err) {
-                    reject({
-                        status: AsmApiResponseCode.ERROR_WRITE_REQUEST_BODY,
-                        err
-                    });
-                    return;
-                }
+            const slowResponseTimeout = setTimeout(() => {
+                return reject({
+                    status: AsmApiResponseCode.REMOTE_ANSWER_TIMEOUT,
+                    id: this._id
+                });
+            }, 4000);
 
-                fs.writeFile(requestFlagFile, fileContent, (err) => {
-                    if (err) {
-                        reject({
-                            status: AsmApiResponseCode.ERROR_WRITE_REQUEST_FLAG,
-                            err
-                        });
-                        return;
-                    }
-
-                    if (waitResponse === DONT_WAIT_FOR_RESPONSE) {
-                        resolve({
-                            status: AsmApiResponseCode.OK
-                        });
-                        return;
-                    }
-
-                    const slowResponseTimeout = setTimeout(() => {
-                        reject({
-                            status: AsmApiResponseCode.REMOTE_ANSWER_TIMEOUT,
-                            id: this._id
-                        });
-                    }, 4000);
-
-                    fileCreated(responseFlagFile).then(() => {
-                        const flagText = fs.readFileSync(responseFlagFile, 'utf8');
-                        const bodyText = fs.readFileSync(responseBodyFile, 'utf8');
-                        resolve({
-                            status: flagText,
-                            body: bodyText
-                        });
-                        clearTimeout(slowResponseTimeout);
-                    });
+            fileCreated(responseFlagFile).then(() => {
+                const flagText = fs.readFileSync(responseFlagFile, 'utf8');
+                const bodyText = fs.readFileSync(responseBodyFile, 'utf8');
+                clearTimeout(slowResponseTimeout);
+                return resolve({
+                    status: flagText,
+                    body: bodyText
                 });
             });
         });
