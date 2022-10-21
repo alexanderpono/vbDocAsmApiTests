@@ -1,43 +1,19 @@
-import { asmApi } from './src/AsmApi';
-import { paths } from './src/testFramework/config';
 const { description, name, version } = require('./package.json');
 import { program } from 'commander';
+import { AsmApi } from './src/AsmApi';
+import { CliCommands } from './src/CliCommands';
+import { ConOutput } from './src/ports/ConOutput';
+import { FsIo } from './src/ports/FsIo';
+import { paths } from './src/testFramework/config';
 
-const chalk = require('chalk');
+const commands = new CliCommands(new AsmApi(new FsIo(paths.asmApi.path1)), new ConOutput());
 
-function toSeconds(millisec: number): number {
-    return Math.round(millisec / 10) / 100;
-}
-
-async function call(callback: () => Promise<unknown>) {
-    const startTime = Date.now();
-    const result = await callback();
-    const endTime = Date.now();
-    const workTime = endTime - startTime;
-    console.log(chalk.green('wordStart', JSON.stringify(result), toSeconds(workTime)));
-}
-program
-    .command('wordStart')
-    .description('start word')
-    .action(() => {
-        call(() => asmApi(paths.asmApi.path1).wordStart(String(Date.now())));
-    });
-
-program
-    .command('wordClose')
-    .description('close word')
-    .action(() => {
-        call(() => asmApi(paths.asmApi.path1).wordClose(String(Date.now())));
-    });
-
+program.command('wordStart').description('start word').action(commands.wordStart);
+program.command('wordClose').description('close word').action(commands.wordClose);
 program
     .command('docOpen')
     .description('open document')
     .argument('<docname>')
-    .action(async (docname: string) => {
-        call(() => asmApi(paths.asmApi.path1).docOpen(String(Date.now()), docname));
-    });
-
+    .action(commands.docOpen);
 program.name(name).version(version).description(description);
-
 program.parse(process.argv);

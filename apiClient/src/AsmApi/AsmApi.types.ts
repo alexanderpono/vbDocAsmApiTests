@@ -32,3 +32,6 @@ export const RESPONSE_FILE_NOT_FOUND: AsmApiResponse = {
     status: AsmApiResponseCode.USER_ERROR,
     body: AsmApiError.FILE_NOT_FOUND
 };
+
+export const DONT_WAIT_FOR_RESPONSE = false;
+export const WAIT_FOR_RESPONSE = true;
