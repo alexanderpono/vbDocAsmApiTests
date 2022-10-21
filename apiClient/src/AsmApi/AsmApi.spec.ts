@@ -1,5 +1,5 @@
 import { asmApi } from '.';
-import { paths } from '../testFramework/config';
+import { paths } from '@src/testFramework/config';
 import faker from 'faker';
 import { stat } from 'fs/promises';
 import {
@@ -11,7 +11,7 @@ import {
     RESPONSE_UNKNOWN_COMMAND,
     RESPONSE_WORD_CLOSED
 } from './AsmApi.types';
-import { FsIo, requestBodyDir, requestFlagDir } from '../ports/FsIo';
+import { FsIo, requestBodyDir, requestFlagDir } from '@src/ports/FsIo';
 
 describe('AsmApi', () => {
     test('.setBody() sets _body', () => {

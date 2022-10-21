@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { AsmApiResponse, AsmApiResponseCode } from '../AsmApi';
+import { AsmApiResponse, AsmApiResponseCode } from '@src/AsmApi';
 
 export const requestFlagDir = 'request';
 export const requestBodyDir = 'request-body';

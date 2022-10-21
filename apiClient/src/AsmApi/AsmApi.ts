@@ -4,7 +4,7 @@ import {
     DONT_WAIT_FOR_RESPONSE,
     WAIT_FOR_RESPONSE
 } from './AsmApi.types';
-import { FsIo } from '../ports/FsIo';
+import { FsIo } from '@src/ports/FsIo';
 
 export class AsmApi {
     _body = '';

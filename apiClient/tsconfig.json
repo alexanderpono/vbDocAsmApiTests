@@ -2,26 +2,17 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@ui-src/*": ["ui-src/*"],
-      "@api-src/*": ["api-src/*"]
+      "@src/*": ["src/*"],
+      "@/*": ["./*"]
     },
     "target": "es6",
     "module": "commonjs",
-    "allowJs": true,
-    "jsx": "react",
+    "allowJs": false,
     "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,
-    "removeComments": true,
-    "outDir": "dist",
     "noImplicitAny": false,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "outDir": "dist"
   },
-  "include": [ "api-src/**/*", "src/AsmApi" ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ]  
+  "include": ["src/**/*"]
 }

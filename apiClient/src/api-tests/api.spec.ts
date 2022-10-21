@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 
-import { docAsmApiProvider as apiProvider } from '../testFramework';
-import { ParamsBuilder } from '../testFramework/builder/ParamsBuilder';
+import { docAsmApiProvider as apiProvider } from '@src/testFramework';
+import { ParamsBuilder } from '@src/testFramework/builder/ParamsBuilder';
 
 describe('AsmApi', () => {
     const runScript = async () => {

@@ -1,5 +1,5 @@
-import { AsmApi } from '../AsmApi';
-import { ConOutput } from '../ports/ConOutput';
+import { AsmApi } from '@src/AsmApi';
+import { ConOutput } from '@src/ports/ConOutput';
 
 export class CliCommands {
     constructor(private api: AsmApi, private conOutput: ConOutput) {}

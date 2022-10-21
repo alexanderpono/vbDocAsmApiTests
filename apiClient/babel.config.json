@@ -1,0 +1,29 @@
+{
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "chrome": "41",
+            "node": "12"
+          },
+          "debug": false,
+          "useBuiltIns": "entry",
+          "corejs": "2.6.11"
+        }
+      ],
+      "@babel/typescript"
+    ],
+    "plugins": [
+      [
+          "module-resolver",
+          {
+              "alias": {
+                  "@src": "./src",
+                  "@": "./"
+                }
+          }
+      ]
+  ]
+
+}
