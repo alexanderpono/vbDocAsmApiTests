@@ -1,36 +1,14 @@
 const fs = require('fs');
 import { stat } from 'fs/promises';
+import { AsmApiResponse, AsmApiResponseCode } from './AsmApi.types';
 
 export const requestFlagDir = 'request';
 export const requestBodyDir = 'request-body';
 export const responseFlagDir = 'response';
 export const responseBodyDir = 'response-body';
 
-export enum AsmApiResponseCode {
-    OK = 'OK',
-    ERROR_WRITE_REQUEST_BODY = 'ERROR_WRITE_REQUEST_BODY',
-    ERROR_WRITE_REQUEST_FLAG = 'ERROR_WRITE_REQUEST_FLAG',
-    REMOTE_ANSWER_TIMEOUT = 'REMOTE_ANSWER_TIMEOUT',
-    ERROR_READ_RESPONSE_FLAG = 'ERROR_READ_RESPONSE_FLAG',
-    USER_ERROR = 'USER_ERROR'
-}
-
-export enum AsmApiError {
-    WORD_IS_CLOSED = 'WORD_IS_CLOSED'
-}
-
-export interface AsmApiResponse {
-    status: AsmApiResponseCode;
-    body?: string;
-}
-
 export const DONT_WAIT_FOR_RESPONSE = false;
 export const WAIT_FOR_RESPONSE = true;
-export const RESPONSE_OK: AsmApiResponse = { status: AsmApiResponseCode.OK, body: '' };
-export const RESPONSE_WORD_CLOSED: AsmApiResponse = {
-    status: AsmApiResponseCode.USER_ERROR,
-    body: AsmApiError.WORD_IS_CLOSED
-};
 
 function fileCreated(fName: string): Promise<boolean> {
     return new Promise((resolve) => {
@@ -132,8 +110,12 @@ export class AsmApi {
     docOpen = (id: string, docname: string): Promise<AsmApiResponse> => {
         return this.setId(id).setBody(`docOpen "${docname}"`).send(WAIT_FOR_RESPONSE);
     };
+
+    static create(folder: string): AsmApi {
+        return new AsmApi(folder);
+    }
 }
 
 export function asmApi(folder: string): AsmApi {
-    return new AsmApi(folder);
+    return AsmApi.create(folder);
 }

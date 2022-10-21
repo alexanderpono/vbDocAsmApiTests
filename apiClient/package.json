@@ -1,12 +1,12 @@
 {
-  "name": "a",
-  "version": "1.0.0",
-  "description": "",
+  "name": "apiclient",
+  "version": "0.1.0",
+  "description": "Client for .doc creation API",
   "main": "index.ts",
   "scripts": {
-    "wordStart": "ts-node index.ts wordStart",
-    "wordClose": "ts-node index.ts wordClose",
-    "docOpen": "ts-node index.ts docOpen",
+    "wordStart": "ts-node app.ts wordStart",
+    "wordClose": "ts-node app.ts wordClose",
+    "docOpen": "ts-node app.ts docOpen",
     "test": "npx jest",
     "eslint": "eslint"
   },

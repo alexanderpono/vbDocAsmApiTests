@@ -7,6 +7,7 @@ export const paths = {
         apiServerDoesNotRun: './api-tests/apiServerDoesNotRun'
     },
     fixtures: {
-        doc1: 'd:/www/vbDocAsmApiTests/apiClient/framework/fixtures/doc1.doc'
+        doc1: 'd:/www/vbDocAsmApiTests/apiClient/src/testFramework/fixtures/doc1.doc',
+        noSuchFile: 'd:/www/noSuchFile.doc'
     }
 };

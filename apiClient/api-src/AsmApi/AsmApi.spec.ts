@@ -1,15 +1,15 @@
-import {
-    asmApi,
-    AsmApiResponse,
-    DONT_WAIT_FOR_RESPONSE,
-    requestBodyDir,
-    requestFlagDir,
-    RESPONSE_OK,
-    RESPONSE_WORD_CLOSED
-} from './AsmApi';
-import { paths } from '../framework/config';
+import { asmApi, DONT_WAIT_FOR_RESPONSE, requestBodyDir, requestFlagDir } from './AsmApi';
+import { paths } from '../../src/testFramework/config';
 import faker from 'faker';
 import { stat } from 'fs/promises';
+import {
+    AsmApiResponse,
+    AsmApiResponseCode,
+    RESPONSE_FILE_NOT_FOUND,
+    RESPONSE_OK,
+    RESPONSE_UNKNOWN_COMMAND,
+    RESPONSE_WORD_CLOSED
+} from './AsmApi.types';
 
 describe('AsmApi', () => {
     test('.constructor() sets _workFolder', () => {
@@ -37,7 +37,7 @@ describe('AsmApi', () => {
 
             const path = `${paths.asmApi.path1}/${requestFlagDir}/${id}`;
 
-            let fileExists = null;
+            let fileExists: boolean | null = null;
             try {
                 await stat(path);
                 fileExists = true;
@@ -57,7 +57,7 @@ describe('AsmApi', () => {
 
             const path = `${paths.asmApi.path1}/${requestBodyDir}/${id}`;
 
-            let fileExists = null;
+            let fileExists: boolean | null = null;
             try {
                 await stat(path);
                 fileExists = true;
@@ -85,7 +85,7 @@ describe('AsmApi', () => {
                 .setBody(faker.random.word())
                 .send();
 
-            expect(response).toEqual({ status: 'USER_ERROR', body: 'UNKNOWN_COMMAND' });
+            expect(response).toEqual(RESPONSE_UNKNOWN_COMMAND);
         });
 
         it('throws ERROR_WRITE_REQUEST_BODY if API path is wrong', (done) => {
@@ -95,7 +95,7 @@ describe('AsmApi', () => {
                 .setBody(faker.random.word())
                 .send()
                 .catch((e) => {
-                    expect(e.status).toBe('ERROR_WRITE_REQUEST_BODY');
+                    expect(e.status).toBe(AsmApiResponseCode.ERROR_WRITE_REQUEST_BODY);
                     done();
                 });
         });
@@ -107,7 +107,7 @@ describe('AsmApi', () => {
                 .setBody(faker.random.word())
                 .send()
                 .catch((e) => {
-                    expect(e.status).toBe('ERROR_WRITE_REQUEST_FLAG');
+                    expect(e.status).toBe(AsmApiResponseCode.ERROR_WRITE_REQUEST_FLAG);
                     done();
                 });
         });
@@ -119,7 +119,7 @@ describe('AsmApi', () => {
                 .setBody(faker.random.word())
                 .send()
                 .catch((e) => {
-                    expect(e.status).toBe('REMOTE_ANSWER_TIMEOUT');
+                    expect(e.status).toBe(AsmApiResponseCode.REMOTE_ANSWER_TIMEOUT);
                     done();
                 });
         });
@@ -155,6 +155,14 @@ describe('AsmApi', () => {
             );
             await asmApi(paths.asmApi.path1).wordClose(String(Date.now()));
             expect(result).toEqual(RESPONSE_OK);
+        });
+        it('returns RESPONSE_FILE_NOT_FOUND if docOpen(no such file)', async () => {
+            await asmApi(paths.asmApi.path1).wordClose(String(Date.now()));
+            const result = await asmApi(paths.asmApi.path1).docOpen(
+                String(Date.now()),
+                paths.fixtures.noSuchFile
+            );
+            expect(result).toEqual(RESPONSE_FILE_NOT_FOUND);
         });
     });
 });

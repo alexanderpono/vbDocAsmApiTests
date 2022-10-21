@@ -1,8 +1,9 @@
 import { asmApi } from './api-src/AsmApi';
-import { paths } from './framework/config';
+import { paths } from './src/testFramework/config';
+const { description, name, version } = require('./package.json');
+import { program } from 'commander';
 
-const commander = require('commander'),
-    chalk = require('chalk');
+const chalk = require('chalk');
 
 function toSeconds(millisec: number): number {
     return Math.round(millisec / 10) / 100;
@@ -15,21 +16,21 @@ async function call(callback: () => Promise<unknown>) {
     const workTime = endTime - startTime;
     console.log(chalk.green('wordStart', JSON.stringify(result), toSeconds(workTime)));
 }
-commander
+program
     .command('wordStart')
     .description('start word')
     .action(() => {
         call(() => asmApi(paths.asmApi.path1).wordStart(String(Date.now())));
     });
 
-commander
+program
     .command('wordClose')
     .description('close word')
     .action(() => {
         call(() => asmApi(paths.asmApi.path1).wordClose(String(Date.now())));
     });
 
-commander
+program
     .command('docOpen')
     .description('open document')
     .argument('<docname>')
@@ -37,6 +38,6 @@ commander
         call(() => asmApi(paths.asmApi.path1).docOpen(String(Date.now()), docname));
     });
 
-commander.version('1.0.0').description('Configuration files creator.');
+program.name(name).version(version).description(description);
 
-commander.parse(process.argv);
+program.parse(process.argv);

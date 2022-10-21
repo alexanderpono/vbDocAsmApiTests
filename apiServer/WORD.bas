@@ -4,6 +4,7 @@ Global Const COMMAND_CODE_OK = "OK"
 Const UNKNOWN_COMMAND = "UNKNOWN_COMMAND"
 Const COMMAND_CODE_USER_ERROR = "USER_ERROR"
 Const WORD_IS_CLOSED = "WORD_IS_CLOSED"
+Const FILE_NOT_FOUND = "FILE_NOT_FOUND"
 Const IDX_CODE = 0
 Const IDX_DATA = 1
 
@@ -27,12 +28,18 @@ Sub docClose()
 End Sub
 
 Function docOpen(path As String) As String
-    If word Is Nothing Then
-        docOpen = WORD_IS_CLOSED
+    If (SYS_FL_exist(path)) Then
+        If word Is Nothing Then
+            docOpen = WORD_IS_CLOSED
+        Else
+            word.Documents.Open fileName:=path
+            docOpen = OK
+        End If
     Else
-        word.Documents.Open fileName:=path
-        docOpen = OK
+        docOpen = FILE_NOT_FOUND
     End If
+
+
 End Function
 
 Sub docFind(text As String)
