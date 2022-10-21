@@ -1,31 +1,4 @@
-# server API for generation of a document
+# CLI to create a document
 
-## wordStart
-request:
-```
-wordStart
-```
+See [apiClient/README.md](apiClient/README.md)
 
-answer:
-```
-{
-    "status": "OK"
-}
-```
-
-
-## error cases
-### 1. unknown command
-
-request:
-```
-Health
-```
-
-answer:
-```
-{
-    "status": "USER_ERROR",
-    "body": "UNKNOWN_COMMAND"
-}
-```
