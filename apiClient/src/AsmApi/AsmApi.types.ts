@@ -12,6 +12,15 @@ export interface AsmApiResponse {
     body?: string;
 }
 
+export interface AsmApiGetStateResponse {
+    status: AsmApiResponseCode;
+    wordIsStarted: boolean;
+}
+export const defaultAsmApiGetStateResponse: AsmApiGetStateResponse = {
+    status: AsmApiResponseCode.OK,
+    wordIsStarted: false
+};
+
 export enum AsmApiError {
     WORD_IS_CLOSED = 'WORD_IS_CLOSED',
     UNKNOWN_COMMAND = 'UNKNOWN_COMMAND',

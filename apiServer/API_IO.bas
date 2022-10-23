@@ -108,8 +108,8 @@ Sub processRequest(requestId As String)
     Next
        
     If commandResult(0) = COMMAND_CODE_OK Then
-        responseBody = ""
-        responseCode = "OK"
+        responseBody = commandResult(1)
+        responseCode = commandResult(0)
     Else
         responseBody = commandResult(1)
         responseCode = commandResult(0)

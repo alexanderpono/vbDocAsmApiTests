@@ -1,6 +1,8 @@
 import {
+    AsmApiGetStateResponse,
     AsmApiResponse,
     AsmApiResponseCode,
+    defaultAsmApiGetStateResponse,
     DONT_WAIT_FOR_RESPONSE,
     WAIT_FOR_RESPONSE
 } from './AsmApi.types';
@@ -56,6 +58,14 @@ export class AsmApi {
 
     docOpen = (id: string, docname: string): Promise<AsmApiResponse> => {
         return this.setId(id).setBody(`docOpen "${docname}"`).send(WAIT_FOR_RESPONSE);
+    };
+
+    getState = async (id: string): Promise<AsmApiGetStateResponse> => {
+        const response = await this.setId(id).setBody('getState').send(WAIT_FOR_RESPONSE);
+        let bodyS = typeof response.body === 'string' ? response.body : '';
+        bodyS = bodyS.trim();
+        const data = JSON.parse(bodyS);
+        return Promise.resolve({ ...defaultAsmApiGetStateResponse, ...data });
     };
 
     static create(fs: FsIo): AsmApi {

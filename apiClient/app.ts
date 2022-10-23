@@ -16,5 +16,6 @@ program
     .argument('<docname>')
     .action(commands.docOpen);
 program.command('docClose').description('close active document').action(commands.docClose);
+program.command('getState').description('get state of assembler').action(commands.getState);
 program.name(name).version(version).description(description);
 program.parse(process.argv);

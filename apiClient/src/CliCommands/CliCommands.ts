@@ -17,4 +17,5 @@ export class CliCommands {
     docOpen = async (docname: string) =>
         this.call('docOpen', () => this.api.docOpen(String(Date.now()), docname));
     docClose = () => this.call('docClose', () => this.api.docClose(String(Date.now())));
+    getState = () => this.call('getState', () => this.api.getState(String(Date.now())));
 }

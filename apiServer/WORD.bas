@@ -34,7 +34,7 @@ Function docClose()
     If word Is Nothing Then
         docClose = WORD_IS_CLOSED
     Else
-        If word.Documents.Count >= 1 Then
+        If word.documents.Count >= 1 Then
             word.ActiveDocument.Close SaveChanges:=False
             docClose = OK
         Else
@@ -48,7 +48,7 @@ Function docOpen(path As String) As String
         If word Is Nothing Then
             docOpen = WORD_IS_CLOSED
         Else
-            word.Documents.Open fileName:=path
+            word.documents.Open fileName:=path
             docOpen = OK
         End If
     Else
@@ -90,8 +90,6 @@ Sub printArgs(args As Variant)
     Dim ArgCount As Integer
     Dim sMsg As String
 
-    'args = getArgs
-    
     For ArgCount = LBound(args) To UBound(args)
         sMsg = sMsg & args(ArgCount) & vbNewLine
     Next ArgCount
@@ -99,6 +97,69 @@ Sub printArgs(args As Variant)
     MsgBox "The arguments are:" & vbNewLine & vbNewLine & sMsg
 
 End Sub
+
+Function quote(value As String) As String
+    quote = """" & value & """"
+End Function
+
+Function getStateWordIsStarted()
+    Dim value As String
+    
+    If word Is Nothing Then
+        value = "false"
+    Else
+        value = "true"
+    End If
+    
+    getStateWordIsStarted = quote("wordIsStarted") & ": " & quote(value)
+End Function
+
+Function getStateDocuments()
+    Dim value As String
+    Dim isFirst As Boolean
+    
+    isFirst = True
+    
+    If word Is Nothing Then
+        value = ""
+    Else
+        For Each objDocument In word.documents
+            If Not isFirst Then
+                value = value & ","
+            End If
+            
+            value = value & quote(objDocument.Name)
+            isFirst = False
+        Next objDocument
+    End If
+    
+    getStateDocuments = quote("documents") & ":[" & value & "]"
+    
+End Function
+
+Function getState()
+    Dim result As String
+    Dim wordIsStarted As String
+    Dim documents As String
+    
+    Dim objDocument
+    Dim strMsg As String
+    
+    result = result & """wordIsStarted"": "
+    If word Is Nothing Then
+        result = result & """false"""
+    Else
+        result = result & """true"""
+        
+        For Each objDocument In word.documents
+            strMsg = strMsg & objDocument.Name & ","
+        Next objDocument
+        result = result & ", ""documents"":[" & strMsg & """""]"
+        
+    End If
+    
+    getState = "{" & getStateWordIsStarted() & ", " & getStateDocuments() & "}"
+End Function
 
 Function execCommand(command As String) As String()
     Dim commandAr() As String
@@ -141,6 +202,14 @@ Function execCommand(command As String) As String()
             returnVal(IDX_DATA) = code
             execCommand = returnVal
         End If
+        Exit Function
+    End If
+
+    If LCase(command) = "getstate" Then
+        code = getState
+        returnVal(IDX_CODE) = COMMAND_CODE_OK
+        returnVal(IDX_DATA) = code
+        execCommand = returnVal
         Exit Function
     End If
 

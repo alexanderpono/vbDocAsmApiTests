@@ -8,6 +8,7 @@
     "wordClose": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts wordClose",
     "docOpen": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts docOpen",
     "docClose": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts docClose",
+    "getState": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts getState",
     "test": "npx jest",
     "eslint": "eslint"
   },
