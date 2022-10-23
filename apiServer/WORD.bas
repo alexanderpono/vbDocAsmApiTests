@@ -5,6 +5,7 @@ Const UNKNOWN_COMMAND = "UNKNOWN_COMMAND"
 Const COMMAND_CODE_USER_ERROR = "USER_ERROR"
 Const WORD_IS_CLOSED = "WORD_IS_CLOSED"
 Const FILE_NOT_FOUND = "FILE_NOT_FOUND"
+Const NO_OPENED_DOCUMENTS = "NO_OPENED_DOCUMENTS"
 Const IDX_CODE = 0
 Const IDX_DATA = 1
 
@@ -23,9 +24,18 @@ Function wordClose() As String
     End If
 End Function
 
-Sub docClose()
-    word.ActiveDocument.Close SaveChanges:=False
-End Sub
+Function docClose()
+    If word Is Nothing Then
+        wordClose = WORD_IS_CLOSED
+    Else
+        If word.Document.Count >= 1 Then
+            word.ActiveDocument.Close SaveChanges:=False
+            docClose = OK
+        Else
+            wordClose = NO_OPENED_DOCUMENTS
+        End If
+    End If
+End Function
 
 Function docOpen(path As String) As String
     If (SYS_FL_exist(path)) Then
@@ -98,6 +108,19 @@ Function execCommand(command As String) As String()
     
     If LCase(command) = "wordclose" Then
         code = wordClose
+        If code = OK Then
+            returnVal(IDX_CODE) = COMMAND_CODE_OK
+            execCommand = returnVal
+        Else
+            returnVal(IDX_CODE) = COMMAND_CODE_USER_ERROR
+            returnVal(IDX_DATA) = code
+            execCommand = returnVal
+        End If
+        Exit Function
+    End If
+
+    If LCase(command) = "docclose" Then
+        code = docClose
         If code = OK Then
             returnVal(IDX_CODE) = COMMAND_CODE_OK
             execCommand = returnVal

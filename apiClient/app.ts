@@ -15,5 +15,6 @@ program
     .description('open document')
     .argument('<docname>')
     .action(commands.docOpen);
+program.command('docClose').description('close active document').action(commands.docClose);
 program.name(name).version(version).description(description);
 program.parse(process.argv);

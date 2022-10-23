@@ -7,6 +7,7 @@ import {
     AsmApiResponseCode,
     DONT_WAIT_FOR_RESPONSE,
     RESPONSE_FILE_NOT_FOUND,
+    RESPONSE_NO_OPENED_DOCUMENTS,
     RESPONSE_OK,
     RESPONSE_UNKNOWN_COMMAND,
     RESPONSE_WORD_CLOSED
@@ -124,7 +125,6 @@ describe('AsmApi', () => {
 
     describe('.wordClose()', () => {
         it('returns WORD_IS_CLOSED after wordClose-wordClose', async () => {
-            await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
             const result = await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
             expect(result).toEqual(RESPONSE_WORD_CLOSED);
         });
@@ -137,7 +137,6 @@ describe('AsmApi', () => {
 
     describe('.docOpen()', () => {
         it('returns WORD_IS_CLOSED after wordClose-docOpen', async () => {
-            await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
             const result = await asmApi(new FsIo(paths.asmApi.path1)).docOpen(
                 String(Date.now()),
                 paths.fixtures.doc1
@@ -154,12 +153,33 @@ describe('AsmApi', () => {
             expect(result).toEqual(RESPONSE_OK);
         });
         it('returns RESPONSE_FILE_NOT_FOUND if docOpen(no such file)', async () => {
-            await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
             const result = await asmApi(new FsIo(paths.asmApi.path1)).docOpen(
                 String(Date.now()),
                 paths.fixtures.noSuchFile
             );
             expect(result).toEqual(RESPONSE_FILE_NOT_FOUND);
         });
+    });
+
+    describe('.docClose()', () => {
+        it('returns WORD_IS_CLOSED after wordClose-docClose', async () => {
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(String(Date.now()));
+            expect(result).toEqual(RESPONSE_WORD_CLOSED);
+        });
+        it('returns NO_OPENED_DOCUMENTS after wordStart-docClose', async () => {
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(String(Date.now()));
+            expect(result).toEqual(RESPONSE_NO_OPENED_DOCUMENTS);
+        });
+    });
+    it('returns OK after wordStart-docOpen-docClose', async () => {
+        await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
+        await asmApi(new FsIo(paths.asmApi.path1)).docOpen(String(Date.now()), paths.fixtures.doc1);
+        const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(String(Date.now()));
+        expect(result).toEqual(RESPONSE_OK);
+    });
+
+    afterEach(async () => {
+        await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
     });
 });

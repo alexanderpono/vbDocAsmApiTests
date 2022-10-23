@@ -50,6 +50,10 @@ export class AsmApi {
         return this.setId(id).setBody('wordClose').send(WAIT_FOR_RESPONSE);
     };
 
+    docClose = (id: string): Promise<AsmApiResponse> => {
+        return this.setId(id).setBody('docClose').send(WAIT_FOR_RESPONSE);
+    };
+
     docOpen = (id: string, docname: string): Promise<AsmApiResponse> => {
         return this.setId(id).setBody(`docOpen "${docname}"`).send(WAIT_FOR_RESPONSE);
     };
