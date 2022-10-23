@@ -10,11 +10,16 @@ import {
     RESPONSE_NO_OPENED_DOCUMENTS,
     RESPONSE_OK,
     RESPONSE_UNKNOWN_COMMAND,
-    RESPONSE_WORD_CLOSED
+    RESPONSE_WORD_CLOSED,
+    RESPONSE_WORD_IS_ALREADY_STARTED
 } from './AsmApi.types';
 import { FsIo, requestBodyDir, requestFlagDir } from '@src/ports/FsIo';
 
 describe('AsmApi', () => {
+    beforeAll(async () => {
+        await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
+    });
+
     test('.setBody() sets _body', () => {
         const w = faker.random.word();
         expect(asmApi(new FsIo(paths.asmApi.path1)).setBody(w)._body).toEqual(w);
@@ -171,12 +176,28 @@ describe('AsmApi', () => {
             const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(String(Date.now()));
             expect(result).toEqual(RESPONSE_NO_OPENED_DOCUMENTS);
         });
+
+        it('returns OK after wordStart-docOpen-docClose', async () => {
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
+            await asmApi(new FsIo(paths.asmApi.path1)).docOpen(
+                String(Date.now()),
+                paths.fixtures.doc1
+            );
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(String(Date.now()));
+            expect(result).toEqual(RESPONSE_OK);
+        });
     });
-    it('returns OK after wordStart-docOpen-docClose', async () => {
-        await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
-        await asmApi(new FsIo(paths.asmApi.path1)).docOpen(String(Date.now()), paths.fixtures.doc1);
-        const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(String(Date.now()));
-        expect(result).toEqual(RESPONSE_OK);
+
+    describe('.wordStart()', () => {
+        it('returns OK after wordClose-wordStart', async () => {
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
+            expect(result).toEqual(RESPONSE_OK);
+        });
+        it('returns WORD_IS_ALREADY_STARTED after wordStart-wordStart', async () => {
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
+            expect(result).toEqual(RESPONSE_WORD_IS_ALREADY_STARTED);
+        });
     });
 
     afterEach(async () => {

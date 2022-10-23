@@ -6,13 +6,19 @@ Const COMMAND_CODE_USER_ERROR = "USER_ERROR"
 Const WORD_IS_CLOSED = "WORD_IS_CLOSED"
 Const FILE_NOT_FOUND = "FILE_NOT_FOUND"
 Const NO_OPENED_DOCUMENTS = "NO_OPENED_DOCUMENTS"
+Const WORD_IS_ALREADY_STARTED = "WORD_IS_ALREADY_STARTED"
 Const IDX_CODE = 0
 Const IDX_DATA = 1
 
-Sub wordStart()
-    Set word = CreateObject("word.application")
-    word.Visible = True
-End Sub
+Function wordStart()
+    If word Is Nothing Then
+        Set word = CreateObject("word.application")
+        word.Visible = True
+        wordStart = OK
+    Else
+        wordStart = WORD_IS_ALREADY_STARTED
+    End If
+End Function
 
 Function wordClose() As String
     If word Is Nothing Then
@@ -26,13 +32,13 @@ End Function
 
 Function docClose()
     If word Is Nothing Then
-        wordClose = WORD_IS_CLOSED
+        docClose = WORD_IS_CLOSED
     Else
-        If word.Document.Count >= 1 Then
+        If word.Documents.Count >= 1 Then
             word.ActiveDocument.Close SaveChanges:=False
             docClose = OK
         Else
-            wordClose = NO_OPENED_DOCUMENTS
+            docClose = NO_OPENED_DOCUMENTS
         End If
     End If
 End Function
@@ -100,9 +106,15 @@ Function execCommand(command As String) As String()
     Dim code As String
     
     If LCase(command) = "wordstart" Then
-        wordStart
-        returnVal(IDX_CODE) = COMMAND_CODE_OK
-        execCommand = returnVal
+        code = wordStart
+        If code = OK Then
+            returnVal(IDX_CODE) = COMMAND_CODE_OK
+            execCommand = returnVal
+        Else
+            returnVal(IDX_CODE) = COMMAND_CODE_USER_ERROR
+            returnVal(IDX_DATA) = code
+            execCommand = returnVal
+        End If
         Exit Function
     End If
     
