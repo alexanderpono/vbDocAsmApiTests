@@ -75,12 +75,12 @@ Private Sub CMD_Click()
     Dim ar() As String
     Dim arlen As Integer
     
-    Dim cmd As String, param1 As String
+    Dim CMD As String, param1 As String
     
     
     ar = Split("docOpen d:\www\doc1.doc")
     arlen = UBound(ar) + 1
-    cmd = ar(0)
+    CMD = ar(0)
     param1 = ar(1)
     
 End Sub
@@ -93,15 +93,30 @@ End Sub
 '    MsgBox s
 'End Sub
 
+
 Private Sub Form_Load()
     'processFirstRequest
     'Unload vbDocAsmSocketForm
     
     
     
-
+    'wordStart
+    'docOpen path:="d:/www/docs/doc-act.doc"
+'    replaceFirstWithText "@num;", "aaa"
+    
+    'replaceAllWithText "@num;", "aaa"
+    'docFind "@num;"
+    'docReplaceSelection "26"
     
     
+    'Dim commandAr
+    'Dim command As String
+    
+    'command = "replaceFirstWithText ""@date"" ""26 apr 2012"""
+    'commandAr = parseCommandString(command)
+    'MsgBox commandAr(0)
+    'MsgBox commandAr(1)
+    'MsgBox commandAr(2)
     
     
 End Sub

@@ -58,7 +58,7 @@ Function docOpen(path As String) As String
 
 End Function
 
-Sub docFind(text As String)
+Sub docFind(text)
     With word.Selection.Find
      .Forward = True
      .ClearFormatting
@@ -69,11 +69,23 @@ Sub docFind(text As String)
     End With
 End Sub
 
-Sub docReplaceSelection(text As String)
+Sub docReplaceSelection(text)
     word.Options.ReplaceSelection = True
     With word.Selection
         .TypeText text:=text
     End With
+End Sub
+
+Sub replaceFirstWithText(search, replaceS)
+    'With word.Selection.Find
+    '.text = search
+    '    .Replacement.text = replaceS
+    '    .Execute FindText = search
+    'End With
+    'MsgBox search
+    docFind search
+    docReplaceSelection replaceS
+    
 End Sub
 
 Function getArgs()
@@ -161,6 +173,104 @@ Function getState()
     getState = "{" & getStateWordIsStarted() & ", " & getStateDocuments() & "}"
 End Function
 
+Function getParamsArray0(cmdString As String)
+    Dim rawAr
+    Dim paramsAr() As String
+    rawAr = Split(cmdString)
+    
+    Dim paramsArraysLen As Integer
+    Dim paramsArrays(10)
+    Dim curParamArray(10) As String
+    Dim i, j As Integer
+    Dim token As String
+    Dim firstChar, lastChar As String
+    Dim paramsArCount, curParamArrayCount As Integer
+    paramsArCount = 0
+    curParamArrayCount = 0
+    
+    
+    
+    For i = 0 To UBound(rawAr)
+        token = rawAr(i)
+        firstChar = Mid(token, 1, 1)
+        lastChar = Mid(token, Len(token), 1)
+        
+        If (curParamArrayCount = 0 And firstChar <> """" And lastChar <> """") Then
+            ReDim Preserve paramsAr(paramsArCount)
+            paramsAr(paramsArCount) = token
+            paramsArCount = paramsArCount + 1
+            GoTo ContinueLoop
+        End If
+        
+        If (curParamArrayCount And firstChar = """" And lastChar = """") Then
+            ReDim Preserve paramsAr(paramsArCount)
+            paramsAr(paramsArCount) = token
+            paramsArCount = paramsArCount + 1
+            GoTo ContinueLoop
+        End If
+        
+        If (lastChar <> """") Then
+            curParamArray(curParamArrayCount) = token
+            curParamArrayCount = curParamArrayCount + 1
+            GoTo ContinueLoop
+        End If
+        
+        curParamArray(curParamArrayCount) = token
+        curParamArrayCount = curParamArrayCount + 1
+        Dim s As String
+        s = ""
+        For j = 0 To curParamArrayCount - 1
+            If (j > 0) Then
+                s = s & " "
+            End If
+            s = s & curParamArray(j)
+        Next j
+        ReDim Preserve paramsAr(paramsArCount)
+        paramsAr(paramsArCount) = s
+        paramsArCount = paramsArCount + 1
+        curParamArrayCount = 0
+        
+ContinueLoop:
+        
+    Next i
+    
+    getParamsArray0 = paramsAr
+End Function
+
+Function deleteQuots(ar0() As String)
+    Dim ar1() As String
+    Dim token As String
+    
+    For i = 0 To UBound(ar0)
+        token = ar0(i)
+        
+        firstChar = Mid(token, 1, 1)
+        lastChar = Mid(token, Len(token), 1)
+        
+        If (firstChar = """" And lastChar = """") Then
+            token = Mid(token, 2, Len(token) - 2)
+        End If
+        
+        ReDim Preserve ar1(i)
+        ar1(i) = token
+    Next i
+    deleteQuots = ar1
+End Function
+
+Function parseCommandString(cmdString As String)
+    Dim ar0() As String
+    Dim ar1() As String
+    Dim i As Integer
+    
+    ar0 = getParamsArray0(cmdString)
+    ar1 = deleteQuots(ar0)
+
+    parseCommandString = ar1
+
+End Function
+
+
+
 Function execCommand(command As String) As String()
     Dim commandAr() As String
     Dim returnVal(0 To 1) As String
@@ -212,12 +322,24 @@ Function execCommand(command As String) As String()
         execCommand = returnVal
         Exit Function
     End If
-
-    commandAr = Split(command)
+    
+    commandAr = parseCommandString(command)
+    If commandAr(0) = "replaceFirstWithText" Then
+        Dim search, replaceS As String
+        search = replace(commandAr(1), """", "")
+        replaceS = replace(commandAr(2), """", "")
+        
+        replaceFirstWithText search, replaceS
+        returnVal(0) = COMMAND_CODE_OK
+        returnVal(1) = ""
+        execCommand = returnVal
+        Exit Function
+    End If
+    
     If commandAr(0) = "docOpen" Then
         Dim docName As String
         docName = commandAr(1)
-        docName = Replace(docName, """", "")
+        docName = replace(docName, """", "")
         code = docOpen(docName)
         If (code = OK) Then
             returnVal(0) = COMMAND_CODE_OK

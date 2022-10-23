@@ -18,4 +18,8 @@ export class CliCommands {
         this.call('docOpen', () => this.api.docOpen(String(Date.now()), docname));
     docClose = () => this.call('docClose', () => this.api.docClose(String(Date.now())));
     getState = () => this.call('getState', () => this.api.getState(String(Date.now())));
+    replaceFirstWithText = async (search: string, replace: string) =>
+        this.call('replaceFirstWithText', () =>
+            this.api.replaceFirstWithText(String(Date.now()), search, replace)
+        );
 }

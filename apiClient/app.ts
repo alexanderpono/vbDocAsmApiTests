@@ -17,5 +17,11 @@ program
     .action(commands.docOpen);
 program.command('docClose').description('close active document').action(commands.docClose);
 program.command('getState').description('get state of assembler').action(commands.getState);
+program
+    .command('replaceFirstWithText')
+    .description('replace <search> with <replace>')
+    .argument('<search>')
+    .argument('<replace>')
+    .action(commands.replaceFirstWithText);
 program.name(name).version(version).description(description);
 program.parse(process.argv);

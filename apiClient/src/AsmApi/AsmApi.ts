@@ -68,6 +68,15 @@ export class AsmApi {
         return Promise.resolve({ ...defaultAsmApiGetStateResponse, ...data });
     };
 
+    replaceFirstWithText = (
+        id: string,
+        search: string,
+        replace: string
+    ): Promise<AsmApiResponse> => {
+        const body = `replaceFirstWithText "${search}" "${replace}"`;
+        return this.setId(id).setBody(body).send(WAIT_FOR_RESPONSE);
+    };
+
     static create(fs: FsIo): AsmApi {
         return new AsmApi(fs);
     }
