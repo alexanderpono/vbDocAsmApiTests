@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { AsmApiResponse, AsmApiResponseCode } from '@src/AsmApi';
+import { unicodeToWin1251 } from './unicodeToWin1251';
 
 export const requestFlagDir = 'request';
 export const requestBodyDir = 'request-body';
@@ -11,9 +12,10 @@ export class FsIo {
 
     writeRequestFile = async (id: string, body: string) => {
         const requestBodyFile = `${this.workFolder}/${requestBodyDir}/${id}`;
+        const body1251 = unicodeToWin1251(body);
 
         try {
-            await fs.promises.writeFile(requestBodyFile, body);
+            await fs.promises.writeFile(requestBodyFile, body1251);
         } catch (err) {
             return Promise.reject({
                 status: AsmApiResponseCode.ERROR_WRITE_REQUEST_BODY,

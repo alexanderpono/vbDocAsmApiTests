@@ -1,8 +1,12 @@
 {
   "name": "apiclient",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Client for .doc creation API",
   "main": "index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexanderpono/vbDocAsmApiTests.git"
+  },
   "scripts": {
     "wordStart": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts wordStart",
     "wordClose": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts wordClose",
@@ -33,7 +37,6 @@
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
     "supertest": "^6.1.3",
-    "ts-node": "^10.3.0",
     "tsconfig-paths": "^4.0.0",
     "typescript": "^4.3.5"
   },
