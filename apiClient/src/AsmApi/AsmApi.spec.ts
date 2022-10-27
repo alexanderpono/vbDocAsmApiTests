@@ -200,6 +200,20 @@ describe('AsmApi', () => {
         });
     });
 
+    describe('.copyAllToBuffer()', () => {
+        it('returns OK after wordClose-wordStart-docOpen', async () => {
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
+            await asmApi(new FsIo(paths.asmApi.path1)).docOpen(
+                String(Date.now()),
+                paths.fixtures.doc1
+            );
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).copyAllToBuffer(
+                String(Date.now())
+            );
+            expect(result).toEqual(RESPONSE_OK);
+        });
+    });
+
     afterEach(async () => {
         await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
     });

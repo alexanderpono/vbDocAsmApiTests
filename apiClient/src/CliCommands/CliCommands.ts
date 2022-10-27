@@ -22,4 +22,7 @@ export class CliCommands {
         this.call('replaceFirstWithText', () =>
             this.api.replaceFirstWithText(String(Date.now()), search, replace)
         );
+
+    copyAllToBuffer = () =>
+        this.call('copyAllToBuffer', () => this.api.copyAllToBuffer(String(Date.now())));
 }

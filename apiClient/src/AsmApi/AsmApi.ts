@@ -77,6 +77,10 @@ export class AsmApi {
         return this.setId(id).setBody(body).send(WAIT_FOR_RESPONSE);
     };
 
+    copyAllToBuffer = (id: string): Promise<AsmApiResponse> => {
+        return this.setId(id).setBody(`copyAllToBuffer`).send(WAIT_FOR_RESPONSE);
+    };
+
     static create(fs: FsIo): AsmApi {
         return new AsmApi(fs);
     }

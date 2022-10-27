@@ -23,5 +23,10 @@ program
     .argument('<search>')
     .argument('<replace>')
     .action(commands.replaceFirstWithText);
+program
+    .command('copyAllToBuffer')
+    .description('select all text and copy to clipboard')
+    .action(commands.copyAllToBuffer);
+
 program.name(name).version(version).description(description);
 program.parse(process.argv);

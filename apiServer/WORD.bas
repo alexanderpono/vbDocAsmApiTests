@@ -58,6 +58,29 @@ Function docOpen(path As String) As String
 
 End Function
 
+Sub docSelectAll()
+    word.Selection.WholeStory
+End Sub
+
+Sub docCopyToBuffer()
+    word.Selection.Copy
+End Sub
+
+Function copyAllToBuffer() As String
+    If word Is Nothing Then
+        copyAllToBuffer = WORD_IS_CLOSED
+    Else
+        If word.documents.Count = 0 Then
+            copyAllToBuffer = NO_OPENED_DOCUMENTS
+        Else
+            docSelectAll
+            docCopyToBuffer
+            copyAllToBuffer = OK
+        End If
+    End If
+End Function
+
+
 Sub docFind(text)
     With word.Selection.Find
      .Forward = True
@@ -323,6 +346,14 @@ Function execCommand(command As String) As String()
         Exit Function
     End If
     
+    If LCase(command) = "copyalltobuffer" Then
+        code = copyAllToBuffer
+        returnVal(IDX_CODE) = COMMAND_CODE_OK
+        returnVal(IDX_DATA) = ""
+        execCommand = returnVal
+        Exit Function
+    End If
+       
     commandAr = parseCommandString(command)
     If commandAr(0) = "replaceFirstWithText" Then
         Dim search, replaceS As String
