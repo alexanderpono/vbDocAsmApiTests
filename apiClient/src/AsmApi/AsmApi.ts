@@ -81,6 +81,10 @@ export class AsmApi {
         return this.setId(id).setBody(`copyAllToBuffer`).send(WAIT_FOR_RESPONSE);
     };
 
+    pasteToEnd = (id: string): Promise<AsmApiResponse> => {
+        return this.setId(id).setBody(`pasteToEnd`).send(WAIT_FOR_RESPONSE);
+    };
+
     static create(fs: FsIo): AsmApi {
         return new AsmApi(fs);
     }

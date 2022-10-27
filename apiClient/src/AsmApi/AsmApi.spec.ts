@@ -15,9 +15,11 @@ import {
 } from './AsmApi.types';
 import { FsIo, requestBodyDir, requestFlagDir } from '@src/ports/FsIo';
 
+const now = () => String(Date.now());
+
 describe('AsmApi', () => {
     beforeAll(async () => {
-        await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
+        await asmApi(new FsIo(paths.asmApi.path1)).wordClose(now());
     });
 
     test('.setBody() sets _body', () => {
@@ -32,7 +34,7 @@ describe('AsmApi', () => {
 
     describe('.send()', () => {
         it('creates flag file', async () => {
-            const id = String(Date.now());
+            const id = now();
             await asmApi(new FsIo(paths.asmApi.path1))
                 .setId(id)
                 .setBody(faker.random.word())
@@ -52,7 +54,7 @@ describe('AsmApi', () => {
         });
 
         it('creates body file', async () => {
-            const id = String(Date.now());
+            const id = now();
             await asmApi(new FsIo(paths.asmApi.path1))
                 .setId(id)
                 .setBody(faker.random.word())
@@ -72,7 +74,7 @@ describe('AsmApi', () => {
         });
 
         it('receives answer', async () => {
-            const id = String(Date.now());
+            const id = now();
             const response: AsmApiResponse = await asmApi(new FsIo(paths.asmApi.path1))
                 .setId(id)
                 .setBody(faker.random.word())
@@ -82,7 +84,7 @@ describe('AsmApi', () => {
         });
 
         it('gets USER_ERROR(UNKNOWN_COMMAND) from .send(unknown command) ', async () => {
-            const id = String(Date.now());
+            const id = now();
             const response: AsmApiResponse = await asmApi(new FsIo(paths.asmApi.path1))
                 .setId(id)
                 .setBody(faker.random.word())
@@ -92,7 +94,7 @@ describe('AsmApi', () => {
         });
 
         it('throws ERROR_WRITE_REQUEST_BODY if API path is wrong', (done) => {
-            const id = String(Date.now());
+            const id = now();
             asmApi(new FsIo(paths.asmApi.badPath))
                 .setId(id)
                 .setBody(faker.random.word())
@@ -104,7 +106,7 @@ describe('AsmApi', () => {
         });
 
         it('throws ERROR_WRITE_REQUEST_FLAG if API path is wrong', (done) => {
-            const id = String(Date.now());
+            const id = now();
             asmApi(new FsIo(paths.asmApi.withoutRequestFlag))
                 .setId(id)
                 .setBody(faker.random.word())
@@ -116,7 +118,7 @@ describe('AsmApi', () => {
         });
 
         it('throws TIMEOUT if API server does not respond', (done) => {
-            const id = String(Date.now());
+            const id = now();
             asmApi(new FsIo(paths.asmApi.apiServerDoesNotRun))
                 .setId(id)
                 .setBody(faker.random.word())
@@ -130,12 +132,12 @@ describe('AsmApi', () => {
 
     describe('.wordClose()', () => {
         it('returns WORD_IS_CLOSED after wordClose-wordClose', async () => {
-            const result = await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).wordClose(now());
             expect(result).toEqual(RESPONSE_WORD_CLOSED);
         });
         it('returns OK after wordStart-wordClose', async () => {
-            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
-            const result = await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).wordClose(now());
             expect(result).toEqual(RESPONSE_OK);
         });
     });
@@ -143,23 +145,23 @@ describe('AsmApi', () => {
     describe('.docOpen()', () => {
         it('returns WORD_IS_CLOSED after wordClose-docOpen', async () => {
             const result = await asmApi(new FsIo(paths.asmApi.path1)).docOpen(
-                String(Date.now()),
+                now(),
                 paths.fixtures.doc1
             );
             expect(result).toEqual(RESPONSE_WORD_CLOSED);
         });
         it('returns OK after wordStart-docOpen', async () => {
-            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
             const result = await asmApi(new FsIo(paths.asmApi.path1)).docOpen(
-                String(Date.now()),
+                now(),
                 paths.fixtures.doc1
             );
-            await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
+            await asmApi(new FsIo(paths.asmApi.path1)).wordClose(now());
             expect(result).toEqual(RESPONSE_OK);
         });
         it('returns RESPONSE_FILE_NOT_FOUND if docOpen(no such file)', async () => {
             const result = await asmApi(new FsIo(paths.asmApi.path1)).docOpen(
-                String(Date.now()),
+                now(),
                 paths.fixtures.noSuchFile
             );
             expect(result).toEqual(RESPONSE_FILE_NOT_FOUND);
@@ -168,53 +170,78 @@ describe('AsmApi', () => {
 
     describe('.docClose()', () => {
         it('returns WORD_IS_CLOSED after wordClose-docClose', async () => {
-            const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(String(Date.now()));
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(now());
             expect(result).toEqual(RESPONSE_WORD_CLOSED);
         });
         it('returns NO_OPENED_DOCUMENTS after wordStart-docClose', async () => {
-            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
-            const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(String(Date.now()));
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(now());
             expect(result).toEqual(RESPONSE_NO_OPENED_DOCUMENTS);
         });
 
         it('returns OK after wordStart-docOpen-docClose', async () => {
-            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
-            await asmApi(new FsIo(paths.asmApi.path1)).docOpen(
-                String(Date.now()),
-                paths.fixtures.doc1
-            );
-            const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(String(Date.now()));
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
+            await asmApi(new FsIo(paths.asmApi.path1)).docOpen(now(), paths.fixtures.doc1);
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).docClose(now());
             expect(result).toEqual(RESPONSE_OK);
         });
     });
 
     describe('.wordStart()', () => {
         it('returns OK after wordClose-wordStart', async () => {
-            const result = await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
             expect(result).toEqual(RESPONSE_OK);
         });
         it('returns WORD_IS_ALREADY_STARTED after wordStart-wordStart', async () => {
-            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
-            const result = await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
             expect(result).toEqual(RESPONSE_WORD_IS_ALREADY_STARTED);
         });
     });
 
     describe('.copyAllToBuffer()', () => {
         it('returns OK after wordClose-wordStart-docOpen', async () => {
-            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(String(Date.now()));
-            await asmApi(new FsIo(paths.asmApi.path1)).docOpen(
-                String(Date.now()),
-                paths.fixtures.doc1
-            );
-            const result = await asmApi(new FsIo(paths.asmApi.path1)).copyAllToBuffer(
-                String(Date.now())
-            );
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
+            await asmApi(new FsIo(paths.asmApi.path1)).docOpen(now(), paths.fixtures.doc1);
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).copyAllToBuffer(now());
             expect(result).toEqual(RESPONSE_OK);
+        });
+
+        it('returns WORD_IS_CLOSED after wordClose-copyAllToBuffer', async () => {
+            await asmApi(new FsIo(paths.asmApi.path1)).wordClose(now());
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).copyAllToBuffer(now());
+            expect(result).toEqual(RESPONSE_WORD_CLOSED);
+        });
+        it('returns NO_OPENED_DOCUMENTS after wordStart-docClose', async () => {
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).copyAllToBuffer(now());
+            expect(result).toEqual(RESPONSE_NO_OPENED_DOCUMENTS);
+        });
+    });
+
+    describe('.pasteToEnd()', () => {
+        it('returns OK after wordClose-wordStart-docOpen-copyAllToBuffer', async () => {
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
+            await asmApi(new FsIo(paths.asmApi.path1)).docOpen(now(), paths.fixtures.doc1);
+            await asmApi(new FsIo(paths.asmApi.path1)).copyAllToBuffer(now());
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).pasteToEnd(now());
+            await asmApi(new FsIo(paths.asmApi.path1)).docClose(now());
+            expect(result).toEqual(RESPONSE_OK);
+        });
+
+        it('returns WORD_IS_CLOSED after wordClose-copyAllToBuffer', async () => {
+            await asmApi(new FsIo(paths.asmApi.path1)).wordClose(now());
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).pasteToEnd(now());
+            expect(result).toEqual(RESPONSE_WORD_CLOSED);
+        });
+        it('returns NO_OPENED_DOCUMENTS after wordStart', async () => {
+            await asmApi(new FsIo(paths.asmApi.path1)).wordStart(now());
+            const result = await asmApi(new FsIo(paths.asmApi.path1)).pasteToEnd(now());
+            expect(result).toEqual(RESPONSE_NO_OPENED_DOCUMENTS);
         });
     });
 
     afterEach(async () => {
-        await asmApi(new FsIo(paths.asmApi.path1)).wordClose(String(Date.now()));
+        await asmApi(new FsIo(paths.asmApi.path1)).wordClose(now());
     });
 });

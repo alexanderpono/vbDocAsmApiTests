@@ -202,8 +202,8 @@ Function getParamsArray0(cmdString As String)
     rawAr = Split(cmdString)
     
     Dim paramsArraysLen As Integer
-    Dim paramsArrays(10)
-    Dim curParamArray(10) As String
+    Dim paramsArrays(50)
+    Dim curParamArray(50) As String
     Dim i, j As Integer
     Dim token As String
     Dim firstChar, lastChar As String
@@ -292,6 +292,27 @@ Function parseCommandString(cmdString As String)
 
 End Function
 
+Function pasteToEnd() As String
+    If word Is Nothing Then
+        pasteToEnd = WORD_IS_CLOSED
+    Else
+        If word.documents.Count = 0 Then
+            pasteToEnd = NO_OPENED_DOCUMENTS
+        Else
+            docGotoEnd
+            docPaste
+            pasteToEnd = OK
+        End If
+    End If
+End Function
+
+Sub docGotoEnd()
+    word.Selection.EndKey (6)
+End Sub
+
+Sub docPaste()
+    word.Selection.Paste
+End Sub
 
 
 Function execCommand(command As String) As String()
@@ -348,11 +369,31 @@ Function execCommand(command As String) As String()
     
     If LCase(command) = "copyalltobuffer" Then
         code = copyAllToBuffer
-        returnVal(IDX_CODE) = COMMAND_CODE_OK
-        returnVal(IDX_DATA) = ""
-        execCommand = returnVal
+        If code = OK Then
+            returnVal(IDX_CODE) = COMMAND_CODE_OK
+            execCommand = returnVal
+        Else
+            returnVal(IDX_CODE) = COMMAND_CODE_USER_ERROR
+            returnVal(IDX_DATA) = code
+            execCommand = returnVal
+        End If
         Exit Function
     End If
+    
+    If LCase(command) = "pastetoend" Then
+        code = pasteToEnd
+        If code = OK Then
+            returnVal(IDX_CODE) = COMMAND_CODE_OK
+            execCommand = returnVal
+        Else
+            returnVal(IDX_CODE) = COMMAND_CODE_USER_ERROR
+            returnVal(IDX_DATA) = code
+            execCommand = returnVal
+        End If
+        Exit Function
+    End If
+    
+
        
     commandAr = parseCommandString(command)
     If commandAr(0) = "replaceFirstWithText" Then

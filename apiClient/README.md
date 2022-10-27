@@ -46,3 +46,24 @@ possible responses:
 {"status":"USER_ERROR","body":"WORD_IS_CLOSED"}
 ```
 
+## copyAllToBuffer
+```
+./asm.sh copyAllToBuffer
+```
+possible responses:
+```
+{"status":"OK","body":""}
+{"status":"USER_ERROR","body":"WORD_IS_CLOSED"}
+{"status":"USER_ERROR","body":"NO_OPENED_DOCUMENTS"}
+```
+
+## pasteToEnd
+```
+./asm.sh pasteToEnd
+```
+possible responses:
+```
+{"status":"OK","body":""}
+{"status":"USER_ERROR","body":"WORD_IS_CLOSED"}
+{"status":"USER_ERROR","body":"NO_OPENED_DOCUMENTS"}
+```
