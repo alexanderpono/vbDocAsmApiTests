@@ -26,4 +26,8 @@ export class CliCommands {
     copyAllToBuffer = () => this.call('copyAllToBuffer', () => this.api.copyAllToBuffer(now()));
     pasteToEnd = () => this.call('pasteToEnd', () => this.api.pasteToEnd(now()));
     copyRowToBuffer = () => this.call('copyRowToBuffer', () => this.api.copyRowToBuffer(now()));
+    saveAs = (docname: string) =>
+        this.call(`saveAs(${docname})`, () => this.api.saveAs(now(), docname));
+    deleteFile = (docname: string) =>
+        this.call(`deleteFile(${docname})`, () => this.api.deleteFile(now(), docname));
 }

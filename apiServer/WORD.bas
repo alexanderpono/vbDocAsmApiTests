@@ -7,6 +7,8 @@ Const WORD_IS_CLOSED = "WORD_IS_CLOSED"
 Const FILE_NOT_FOUND = "FILE_NOT_FOUND"
 Const NO_OPENED_DOCUMENTS = "NO_OPENED_DOCUMENTS"
 Const WORD_IS_ALREADY_STARTED = "WORD_IS_ALREADY_STARTED"
+Const TARGET_FILE_EXISTS = "TARGET_FILE_EXISTS"
+Const DELETE_FILE_ERROR = "DELETE_FILE_ERROR"
 Const IDX_CODE = 0
 Const IDX_DATA = 1
 
@@ -318,6 +320,10 @@ Sub docSelectTableRow_()
     word.Selection.SelectRow
 End Sub
 
+Sub docSaveAs(fName As String)
+    word.ActiveDocument.saveAs (fName)
+End Sub
+
 Function copyRowToBuffer() As String
     If word Is Nothing Then
         copyRowToBuffer = WORD_IS_CLOSED
@@ -329,6 +335,34 @@ Function copyRowToBuffer() As String
             docCopyToBuffer
             copyRowToBuffer = OK
         End If
+    End If
+End Function
+
+Function saveAs(fName As String) As String
+    If word Is Nothing Then
+        saveAs = WORD_IS_CLOSED
+    Else
+        If word.documents.Count = 0 Then
+            saveAs = NO_OPENED_DOCUMENTS
+        Else
+            If (SYS_FL_exist(fName)) Then
+                saveAs = TARGET_FILE_EXISTS
+            Else
+                docSaveAs (fName)
+                saveAs = OK
+            End If
+        End If
+    End If
+End Function
+
+Function deleteFile(fName As String) As String
+    Dim code As Boolean
+    
+    code = SYS_FL_delete(fName)
+    If code = True Then
+        deleteFile = OK
+    Else
+        deleteFile = DELETE_FILE_ERROR
     End If
 End Function
 
@@ -443,6 +477,36 @@ Function execCommand(command As String) As String()
         docName = commandAr(1)
         docName = replace(docName, """", "")
         code = docOpen(docName)
+        If (code = OK) Then
+            returnVal(0) = COMMAND_CODE_OK
+            execCommand = returnVal
+        Else
+            returnVal(IDX_CODE) = COMMAND_CODE_USER_ERROR
+            returnVal(IDX_DATA) = code
+            execCommand = returnVal
+        End If
+        Exit Function
+    End If
+    
+    If commandAr(0) = "saveAs" Then
+        docName = commandAr(1)
+        docName = replace(docName, """", "")
+        code = saveAs(docName)
+        If (code = OK) Then
+            returnVal(0) = COMMAND_CODE_OK
+            execCommand = returnVal
+        Else
+            returnVal(IDX_CODE) = COMMAND_CODE_USER_ERROR
+            returnVal(IDX_DATA) = code
+            execCommand = returnVal
+        End If
+        Exit Function
+    End If
+    
+    If commandAr(0) = "deleteFile" Then
+        docName = commandAr(1)
+        docName = replace(docName, """", "")
+        code = deleteFile(docName)
         If (code = OK) Then
             returnVal(0) = COMMAND_CODE_OK
             execCommand = returnVal

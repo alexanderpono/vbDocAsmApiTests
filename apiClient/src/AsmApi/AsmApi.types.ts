@@ -26,7 +26,8 @@ export enum AsmApiError {
     UNKNOWN_COMMAND = 'UNKNOWN_COMMAND',
     FILE_NOT_FOUND = 'FILE_NOT_FOUND',
     NO_OPENED_DOCUMENTS = 'NO_OPENED_DOCUMENTS',
-    WORD_IS_ALREADY_STARTED = 'WORD_IS_ALREADY_STARTED'
+    WORD_IS_ALREADY_STARTED = 'WORD_IS_ALREADY_STARTED',
+    TARGET_FILE_EXISTS = 'TARGET_FILE_EXISTS'
 }
 
 export const RESPONSE_OK: AsmApiResponse = { status: AsmApiResponseCode.OK, body: '' };
@@ -52,6 +53,11 @@ export const RESPONSE_NO_OPENED_DOCUMENTS: AsmApiResponse = {
 export const RESPONSE_WORD_IS_ALREADY_STARTED: AsmApiResponse = {
     status: AsmApiResponseCode.USER_ERROR,
     body: AsmApiError.WORD_IS_ALREADY_STARTED
+};
+
+export const RESPONSE_TARGET_FILE_EXISTS: AsmApiResponse = {
+    status: AsmApiResponseCode.USER_ERROR,
+    body: AsmApiError.TARGET_FILE_EXISTS
 };
 
 export const DONT_WAIT_FOR_RESPONSE = false;

@@ -1,6 +1,6 @@
 {
   "name": "apiclient",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Client for .doc creation API",
   "main": "index.ts",
   "repository": {
@@ -16,6 +16,8 @@
     "copyAllToBuffer": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts copyAllToBuffer",
     "pasteToEnd": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts pasteToEnd",
     "copyRowToBuffer": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts copyRowToBuffer",
+    "saveAs": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts saveAs",
+    "deleteFile": "ts-node --project tsconfig.json -r tsconfig-paths/register app.ts deleteFile",
     "test": "npx jest",
     "eslint": "eslint"
   },

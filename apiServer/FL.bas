@@ -54,7 +54,7 @@ Function SYS_FL_delete(fileName)
    If (found) Then
       On Error Resume Next
       Err.Clear
-      fileSystem.DeleteFile fileName
+      fileSystem.deleteFile fileName
       If (Err <> 0) Then
          Err.Clear
          'UI_wr "SYS_FL_delete : ошибка удаления файла '" & fileName & "'<BR>"
@@ -65,7 +65,6 @@ Function SYS_FL_delete(fileName)
 
    SYS_FL_delete = True
 End Function
-
 
 
 

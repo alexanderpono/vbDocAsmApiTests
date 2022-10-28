@@ -35,6 +35,16 @@ program
     .command('copyRowToBuffer')
     .description('copy current row in current table to buffer')
     .action(commands.copyRowToBuffer);
+program
+    .command('saveAs')
+    .description('save active document as')
+    .argument('<docname>')
+    .action(commands.saveAs);
+program
+    .command('deleteFile')
+    .description('delete file')
+    .argument('<docname>')
+    .action(commands.deleteFile);
 
 program.name(name).version(version).description(description);
 program.parse(process.argv);

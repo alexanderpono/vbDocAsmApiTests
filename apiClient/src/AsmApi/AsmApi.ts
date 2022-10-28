@@ -89,6 +89,14 @@ export class AsmApi {
         return this.setId(id).setBody(`copyRowToBuffer`).send(WAIT_FOR_RESPONSE);
     };
 
+    saveAs = (id: string, docname: string): Promise<AsmApiResponse> => {
+        return this.setId(id).setBody(`saveAs "${docname}"`).send(WAIT_FOR_RESPONSE);
+    };
+
+    deleteFile = (id: string, docname: string): Promise<AsmApiResponse> => {
+        return this.setId(id).setBody(`deleteFile "${docname}"`).send(WAIT_FOR_RESPONSE);
+    };
+
     static create(fs: FsIo): AsmApi {
         return new AsmApi(fs);
     }

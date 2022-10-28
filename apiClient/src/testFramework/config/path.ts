@@ -9,6 +9,8 @@ export const paths = {
     fixtures: {
         doc1: 'd:/www/vbDocAsmApiTests/apiClient/src/testFramework/fixtures/doc1.doc',
         docRow: 'd:/www/vbDocAsmApiTests/apiClient/src/testFramework/fixtures/doc-row.doc',
+        docExists: 'd:/www/vbDocAsmApiTests/apiClient/src/testFramework/fixtures/docExists.doc',
+        docSaveAs: 'd:/www/vbDocAsmApiTests/apiClient/src/testFramework/fixtures/docSaveAs.doc',
         noSuchFile: 'd:/www/noSuchFile.doc'
     }
 };

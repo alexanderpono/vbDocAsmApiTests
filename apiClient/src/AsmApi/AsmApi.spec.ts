@@ -9,6 +9,7 @@ import {
     RESPONSE_FILE_NOT_FOUND,
     RESPONSE_NO_OPENED_DOCUMENTS,
     RESPONSE_OK,
+    RESPONSE_TARGET_FILE_EXISTS,
     RESPONSE_UNKNOWN_COMMAND,
     RESPONSE_WORD_CLOSED,
     RESPONSE_WORD_IS_ALREADY_STARTED
@@ -259,6 +260,40 @@ describe('AsmApi', () => {
         it('returns NO_OPENED_DOCUMENTS after wordStart', async () => {
             await asmApi(fs).wordStart(now());
             const result = await asmApi(fs).copyRowToBuffer(now());
+            expect(result).toEqual(RESPONSE_NO_OPENED_DOCUMENTS);
+        });
+    });
+
+    describe('.saveAs()', () => {
+        it('returns OK after wordStart-docOpen if target does not exist', async () => {
+            await asmApi(fs).deleteFile(now(), paths.fixtures.docSaveAs);
+            await asmApi(fs).wordStart(now());
+            await asmApi(fs).docOpen(now(), paths.fixtures.doc1);
+            const result = await asmApi(fs).saveAs(now(), paths.fixtures.docSaveAs);
+            await asmApi(fs).wordClose(now());
+            await asmApi(fs).deleteFile(now(), paths.fixtures.docSaveAs);
+            expect(result).toEqual(RESPONSE_OK);
+        });
+
+        it('returns TARGET_FILE_EXISTS after wordStart-docOpen if target exists', async () => {
+            await asmApi(fs).deleteFile(now(), paths.fixtures.docSaveAs);
+            await asmApi(fs).wordStart(now());
+            await asmApi(fs).docOpen(now(), paths.fixtures.doc1);
+            await asmApi(fs).saveAs(now(), paths.fixtures.docSaveAs);
+            const result = await asmApi(fs).saveAs(now(), paths.fixtures.docSaveAs);
+            await asmApi(fs).wordClose(now());
+            await asmApi(fs).deleteFile(now(), paths.fixtures.docSaveAs);
+            expect(result).toEqual(RESPONSE_TARGET_FILE_EXISTS);
+        });
+
+        it('returns WORD_IS_CLOSED after wordClose', async () => {
+            await asmApi(fs).wordClose(now());
+            const result = await asmApi(fs).saveAs(now(), paths.fixtures.docSaveAs);
+            expect(result).toEqual(RESPONSE_WORD_CLOSED);
+        });
+        it('returns NO_OPENED_DOCUMENTS after wordStart', async () => {
+            await asmApi(fs).wordStart(now());
+            const result = await asmApi(fs).saveAs(now(), paths.fixtures.docSaveAs);
             expect(result).toEqual(RESPONSE_NO_OPENED_DOCUMENTS);
         });
     });
