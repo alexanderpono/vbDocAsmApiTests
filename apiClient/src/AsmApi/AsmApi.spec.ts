@@ -18,8 +18,9 @@ import { FsIo, requestBodyDir, requestFlagDir } from '@src/ports/FsIo';
 const now = () => String(Date.now());
 
 describe('AsmApi', () => {
+    const fs = new FsIo(paths.asmApi.path1);
     beforeAll(async () => {
-        await asmApi(new FsIo(paths.asmApi.path1)).wordClose(now());
+        await asmApi(fs).wordClose(now());
     });
 
     test('.setBody() sets _body', () => {
@@ -241,7 +242,28 @@ describe('AsmApi', () => {
         });
     });
 
+    describe('.copyRowToBuffer()', () => {
+        it('returns OK after wordStart-docOpen', async () => {
+            await asmApi(fs).wordStart(now());
+            await asmApi(fs).docOpen(now(), paths.fixtures.docRow);
+            const result = await asmApi(fs).copyRowToBuffer(now());
+            await asmApi(fs).docClose(now());
+            expect(result).toEqual(RESPONSE_OK);
+        });
+
+        it('returns WORD_IS_CLOSED after wordClose-copyAllToBuffer', async () => {
+            await asmApi(fs).wordClose(now());
+            const result = await asmApi(fs).copyRowToBuffer(now());
+            expect(result).toEqual(RESPONSE_WORD_CLOSED);
+        });
+        it('returns NO_OPENED_DOCUMENTS after wordStart', async () => {
+            await asmApi(fs).wordStart(now());
+            const result = await asmApi(fs).copyRowToBuffer(now());
+            expect(result).toEqual(RESPONSE_NO_OPENED_DOCUMENTS);
+        });
+    });
+
     afterEach(async () => {
-        await asmApi(new FsIo(paths.asmApi.path1)).wordClose(now());
+        await asmApi(fs).wordClose(now());
     });
 });

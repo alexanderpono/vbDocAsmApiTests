@@ -25,4 +25,5 @@ export class CliCommands {
         );
     copyAllToBuffer = () => this.call('copyAllToBuffer', () => this.api.copyAllToBuffer(now()));
     pasteToEnd = () => this.call('pasteToEnd', () => this.api.pasteToEnd(now()));
+    copyRowToBuffer = () => this.call('copyRowToBuffer', () => this.api.copyRowToBuffer(now()));
 }

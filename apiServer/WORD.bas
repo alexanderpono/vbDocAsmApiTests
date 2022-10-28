@@ -314,6 +314,24 @@ Sub docPaste()
     word.Selection.Paste
 End Sub
 
+Sub docSelectTableRow_()
+    word.Selection.SelectRow
+End Sub
+
+Function copyRowToBuffer() As String
+    If word Is Nothing Then
+        copyRowToBuffer = WORD_IS_CLOSED
+    Else
+        If word.documents.Count = 0 Then
+            copyRowToBuffer = NO_OPENED_DOCUMENTS
+        Else
+            docSelectTableRow_
+            docCopyToBuffer
+            copyRowToBuffer = OK
+        End If
+    End If
+End Function
+
 
 Function execCommand(command As String) As String()
     Dim commandAr() As String
@@ -393,6 +411,18 @@ Function execCommand(command As String) As String()
         Exit Function
     End If
     
+    If LCase(command) = "copyrowtobuffer" Then
+        code = copyRowToBuffer
+        If code = OK Then
+            returnVal(IDX_CODE) = COMMAND_CODE_OK
+            execCommand = returnVal
+        Else
+            returnVal(IDX_CODE) = COMMAND_CODE_USER_ERROR
+            returnVal(IDX_DATA) = code
+            execCommand = returnVal
+        End If
+        Exit Function
+    End If
 
        
     commandAr = parseCommandString(command)

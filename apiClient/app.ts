@@ -31,6 +31,10 @@ program
     .command('pasteToEnd')
     .description('paste from clipboard to the end of the document')
     .action(commands.pasteToEnd);
+program
+    .command('copyRowToBuffer')
+    .description('copy current row in current table to buffer')
+    .action(commands.copyRowToBuffer);
 
 program.name(name).version(version).description(description);
 program.parse(process.argv);
